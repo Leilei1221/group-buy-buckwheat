@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玉民黃金蕎麥 × 澎玉191果乾｜限定團購</title>
+<style>
+  :root {
+    --brown: #5c3317;
+    --amber: #c8860a;
+    --amber-light: #f0a820;
+    --cream: #FFF8F0;
+    --green: #2d6a2d;
+    --green-light: #e8f5e8;
+    --purple: #512da8;
+    --purple-light: #ede7f6;
+    --red: #c62828;
+    --gray: #666;
+    --border: #e0d0b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Noto Sans TC", sans-serif; background: var(--cream); color: #333; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, var(--brown) 0%, #8b4513 100%); color: #fff; text-align: center; padding: 20px 16px 16px; }
+  .header h1 { font-size: 1.4rem; line-height: 1.4; margin-bottom: 6px; }
+  .header .sub { font-size: 0.85rem; opacity: 0.85; }
+  .deadline-badge { display: inline-block; background: var(--amber); color: #fff; font-size: 0.85rem; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-top: 8px; }
+  #countdown { font-size: 1rem; font-weight: bold; color: #ffe082; margin-top: 6px; }
+
+  /* Shipping info */
+  .ship-info { background: #fff; border-left: 4px solid var(--amber); margin: 12px 16px; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 0.82rem; color: #555; line-height: 1.7; }
+  .ship-info strong { color: var(--brown); }
+
+  /* Section title */
+  .section-title { display: flex; align-items: center; gap: 8px; margin: 16px 16px 10px; font-size: 1.05rem; font-weight: bold; }
+  .section-title .badge { padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; color: #fff; }
+  .badge-green { background: var(--green); }
+  .badge-purple { background: var(--purple); }
+
+  /* Grid */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px; }
+  @media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Card */
+  .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .card-body { padding: 8px 10px 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .card-name { font-size: 0.82rem; font-weight: bold; color: var(--brown); line-height: 1.4; min-height: 2.2em; }
+  .price-row { display: flex; align-items: baseline; gap: 6px; }
+  .price { font-size: 1.05rem; font-weight: bold; color: var(--red); }
+  .orig { font-size: 0.72rem; color: #aaa; text-decoration: line-through; }
+  .qty-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .qty-btn { width: 28px; height: 28px; border: 1.5px solid var(--amber); border-radius: 50%; background: #fff; color: var(--amber); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: background 0.15s; }
+  .qty-btn:active { background: var(--amber); color: #fff; }
+  .qty-num { font-size: 1rem; font-weight: bold; color: #333; min-width: 20px; text-align: center; }
+  .subtotal { font-size: 0.75rem; color: var(--gray); margin-left: auto; }
+
+  /* Sticky bar */
+  .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--brown); color: #fff; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+  .sticky-left { font-size: 0.85rem; line-height: 1.5; }
+  .sticky-total { font-size: 1.1rem; font-weight: bold; color: var(--amber-light); }
+  .btn-order { background: var(--amber); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 0.95rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .btn-order:active { background: var(--amber-light); }
+  .body-pad { padding-bottom: 70px; }
+
+  /* Modal */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; overflow-y: auto; }
+  .overlay.active { display: flex; align-items: flex-start; justify-content: center; padding: 20px 12px; }
+  .modal { background: #fff; border-radius: 14px; width: 100%; max-width: 480px; padding: 20px; }
+  .modal h2 { font-size: 1.05rem; color: var(--brown); margin-bottom: 14px; }
+  .order-summary { background: var(--cream); border-radius: 8px; padding: 10px; font-size: 0.82rem; margin-bottom: 14px; max-height: 160px; overflow-y: auto; }
+  .order-summary li { padding: 3px 0; display: flex; justify-content: space-between; }
+  .order-total { font-weight: bold; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; display: flex; justify-content: space-between; }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 0.82rem; color: var(--brown); font-weight: bold; margin-bottom: 4px; }
+  .form-group input, .form-group textarea, .form-group select { width: 100%; border: 1.5px solid var(--border); border-radius: 7px; padding: 9px 11px; font-size: 0.88rem; outline: none; }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--amber); }
+  .btn-submit { width: 100%; background: var(--amber); color: #fff; border: none; border-radius: 8px; padding: 13px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 4px; }
+  .btn-cancel { width: 100%; background: #f0f0f0; color: #666; border: none; border-radius: 8px; padding: 11px; font-size: 0.9rem; cursor: pointer; margin-top: 8px; }
+
+  /* Success */
+  .success-box { display: none; text-align: center; }
+  .success-box.active { display: block; }
+  .success-icon { font-size: 3rem; margin-bottom: 12px; }
+  .success-msg { background: var(--cream); border-radius: 8px; padding: 12px; font-size: 0.82rem; text-align: left; margin: 12px 0; white-space: pre-wrap; line-height: 1.7; }
+  .btn-copy { background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.9rem; cursor: pointer; }
+  .btn-close-success { background: #eee; color: #555; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.9rem; cursor: pointer; margin-left: 8px; }
+</style>
+</head>
+<body class="body-pad">
+
+<div class="header">
+  <div class="sub">陳小球的非買Book × 限定團購</div>
+  <h1>🌾 玉民黃金蕎麥主題館<br><span style="font-size:0.85em">VS.</span><br>🍑 澎玉191果乾</h1>
+  <div class="deadline-badge">⏰ 結單：5/12（二）16:00</div>
+  <div id="countdown"></div>
+</div>
+
+<div class="ship-info">
+  <strong>📦 運費規則：</strong><br>
+  • 7-11 店到店：滿 $2,000 免運，未滿 $100<br>
+  • 黑貓宅配：滿 $3,500 免運，未滿 $200<br>
+  • 恕不寄送外島
+</div>
+
+<!-- 黃金蕎麥 -->
+<div class="section-title">
+  <span class="badge badge-green">玉民黃金蕎麥</span>蕎麥系列好物
+</div>
+<div class="grid" id="grid-buckwheat"></div>
+
+<!-- 澎玉191 -->
+<div class="section-title" style="margin-top:20px">
+  <span class="badge badge-purple">澎玉191</span>天然果乾海鮮堅果
+</div>
+<div class="grid" id="grid-pengyu"></div>
+
+<!-- 浮動結單列 -->
+<div class="sticky-bar">
+  <div class="sticky-left">
+    <span id="bar-count">尚未選購</span><br>
+    <span class="sticky-total" id="bar-total">$0</span>
+  </div>
+  <button class="btn-order" onclick="openModal()">前往結單 →</button>
+</div>
+
+<!-- 結單 Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div id="form-section">
+      <h2>📋 確認訂單</h2>
+      <ul class="order-summary" id="order-summary-list"></ul>
+      <div class="form-group">
+        <label>姓名 *</label>
+        <input type="text" id="f-name" placeholder="請輸入姓名">
+      </div>
+      <div class="form-group">
+        <label>配送方式 *</label>
+        <select id="f-ship">
+          <option value="">-- 選擇配送方式 --</option>
+          <option value="7-11店到店">7-11 店到店</option>
+          <option value="黑貓宅配">黑貓宅配</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>備註（取貨門市 / 地址 / 其他）</label>
+        <textarea id="f-note" rows="2" placeholder="例：7-11 花蓮中華店 / 或收件地址"></textarea>
+      </div>
+      <button class="btn-submit" onclick="submitOrder()">送出訂單</button>
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+    </div>
+    <div class="success-box" id="success-section">
+      <div class="success-icon">🎉</div>
+      <h2>訂單已送出！</h2>
+      <div class="success-msg" id="success-msg"></div>
+      <button class="btn-copy" onclick="copyMsg()">複製訂單內容</button>
+      <button class="btn-close-success" onclick="closeModal()">關閉</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'GAS_WEBAPP_URL_HERE';
+const DEADLINE = new Date('2026-05-12T16:00:00+08:00');
+
+const PRODUCTS_BUCKWHEAT = [
+  { id:'p01', name:'蕎麥茶茶包 12入（無咖啡因）', price:160, orig:220, img:'images/p01.avif' },
+  { id:'p02', name:'蕎麥茶茶包 50入（無咖啡因）', price:600, orig:790, img:'images/p02.avif' },
+  { id:'p03', name:'黃金蕎麥脆粒', price:200, orig:280, img:'images/p03.avif' },
+  { id:'p04', name:'蕎麥海苔（原味）', price:90, orig:130, img:'images/p04.avif' },
+  { id:'p05', name:'蕎麥海苔（芝麻）', price:90, orig:130, img:'images/p05.avif' },
+  { id:'p06', name:'蕎麥海苔（杏仁）', price:90, orig:130, img:'images/p06.avif' },
+  { id:'p07', name:'蕎麥海苔（麻辣）', price:90, orig:130, img:'images/p07.avif' },
+  { id:'p08', name:'堅果脆丸子（蕎麥風味）', price:90, orig:130, img:'images/p08.avif' },
+  { id:'p09', name:'堅果脆丸子（海苔風味）', price:90, orig:130, img:'images/p09.avif' },
+  { id:'p10', name:'黃金蕎麥 QQ麵', price:180, orig:250, img:'images/p10.avif' },
+  { id:'p11', name:'黃金蕎麥 黃金麵', price:180, orig:250, img:'images/p11.avif' },
+  { id:'p12', name:'黃金蕎麥 波浪麵', price:180, orig:250, img:'images/p12.avif' },
+  { id:'p13', name:'黃金蕎麥 長壽細麵', price:180, orig:250, img:'images/p13.avif' },
+  { id:'p14', name:'黃金蕎麥麵味露', price:200, orig:280, img:'images/p14.avif' },
+  { id:'p15', name:'黃金蕎麥醬（全素）', price:200, orig:280, img:'images/p15.avif' },
+  { id:'p16', name:'黃金蕎麥芝麻醬（全素）', price:180, orig:230, img:'images/p16.avif' },
+];
+
+const PRODUCTS_PENGYU = [
+  { id:'p17', name:'【澎玉191】紅心芭樂乾', price:180, orig:210, img:'images/p17.avif' },
+  { id:'p18', name:'【澎玉191】愛文芒果乾', price:230, orig:240, img:'images/p18.avif' },
+  { id:'p19', name:'【澎玉191】蘋果乾', price:170, orig:190, img:'images/p19.avif' },
+  { id:'p20', name:'【澎玉191】情人果乾', price:170, orig:190, img:'images/p20.avif' },
+  { id:'p21', name:'【澎玉191】草莓乾', price:180, orig:200, img:'images/p21.avif' },
+  { id:'p22', name:'【澎玉191】即食檸檬片', price:170, orig:190, img:'images/p22.avif' },
+  { id:'p23', name:'【澎玉191】水蜜桃乾', price:170, orig:190, img:'images/p23.avif' },
+  { id:'p24', name:'【澎玉191】鳳梨花乾（無糖）', price:180, orig:200, img:'images/p24.avif' },
+  { id:'p25', name:'【澎玉191】碳烤魷魚片', price:165, orig:180, img:'images/p25.avif' },
+  { id:'p26', name:'【澎玉191】小卷片', price:165, orig:180, img:'images/p26.avif' },
+  { id:'p27', name:'【澎玉191】綜合果仁 400g', price:160, orig:170, img:'images/p27.avif' },
+  { id:'p28', name:'【澎玉191】低溫烘焙無調味綜合堅果', price:285, orig:300, img:'images/p28.avif' },
+];
+
+const ALL_PRODUCTS = [...PRODUCTS_BUCKWHEAT, ...PRODUCTS_PENGYU];
+const qty = {};
+ALL_PRODUCTS.forEach(p => qty[p.id] = 0);
+
+function renderGrid(products, gridId) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = products.map(p => `
+    <div class="card" id="card-${p.id}">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="price-row">
+          <span class="price">$${p.price}</span>
+          <span class="orig">$${p.orig}</span>
+        </div>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="change('${p.id}',-1)">−</button>
+          <span class="qty-num" id="qty-${p.id}">0</span>
+          <button class="qty-btn" onclick="change('${p.id}',1)">+</button>
+          <span class="subtotal" id="sub-${p.id}"></span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function change(id, delta) {
+  qty[id] = Math.max(0, qty[id] + delta);
+  document.getElementById('qty-' + id).textContent = qty[id];
+  const p = ALL_PRODUCTS.find(x => x.id === id);
+  const sub = document.getElementById('sub-' + id);
+  sub.textContent = qty[id] > 0 ? '$' + (qty[id] * p.price) : '';
+  const card = document.getElementById('card-' + id);
+  card.style.outline = qty[id] > 0 ? '2px solid #c8860a' : '';
+  updateBar();
+}
+
+function totalItems() { return ALL_PRODUCTS.reduce((s,p) => s + qty[p.id], 0); }
+function totalPrice() { return ALL_PRODUCTS.reduce((s,p) => s + qty[p.id] * p.price, 0); }
+
+function updateBar() {
+  const items = totalItems(), total = totalPrice();
+  document.getElementById('bar-count').textContent = items > 0 ? `已選 ${items} 件` : '尚未選購';
+  document.getElementById('bar-total').textContent = '$' + total.toLocaleString();
+}
+
+function openModal() {
+  if (totalItems() === 0) { alert('請先選購商品！'); return; }
+  document.getElementById('form-section').style.display = '';
+  document.getElementById('success-section').classList.remove('active');
+  renderSummary();
+  document.getElementById('overlay').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('active');
+}
+
+function renderSummary() {
+  const items = ALL_PRODUCTS.filter(p => qty[p.id] > 0);
+  const ul = document.getElementById('order-summary-list');
+  ul.innerHTML = items.map(p =>
+    `<li><span>${p.name} × ${qty[p.id]}</span><span>$${qty[p.id]*p.price}</span></li>`
+  ).join('') + `<li class="order-total"><span>合計</span><span>$${totalPrice().toLocaleString()}</span></li>`;
+}
+
+async function submitOrder() {
+  const name = document.getElementById('f-name').value.trim();
+  const ship = document.getElementById('f-ship').value;
+  const note = document.getElementById('f-note').value.trim();
+  if (!name) { alert('請填寫姓名'); return; }
+  if (!ship) { alert('請選擇配送方式'); return; }
+
+  const items = ALL_PRODUCTS.filter(p => qty[p.id] > 0);
+  const summary = items.map(p => `${p.name}×${qty[p.id]}`).join('、');
+  const total = totalPrice();
+
+  const params = new URLSearchParams({ name, ship, summary, total, note });
+  items.forEach(p => params.append(p.id, qty[p.id]));
+
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled = true; btn.textContent = '送出中…';
+  try {
+    await fetch(GAS_URL, { method: 'POST', body: params, mode: 'no-cors' });
+  } catch(e) {}
+
+  const msgLines = [`${name} 你好！\n訂購明細：`];
+  items.forEach(p => msgLines.push(`• ${p.name} × ${qty[p.id]}  $${qty[p.id]*p.price}`));
+  msgLines.push(`\n總金額：$${total.toLocaleString()}`);
+  msgLines.push(`配送：${ship}`);
+  if (note) msgLines.push(`備註：${note}`);
+  msgLines.push('\n請記得於 24 小時內完成 ATM 匯款，並回報帳號末五碼給團主，謝謝！');
+
+  window._successMsg = msgLines.join('\n');
+  document.getElementById('success-msg').textContent = window._successMsg;
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('success-section').classList.add('active');
+  btn.disabled = false; btn.textContent = '送出訂單';
+}
+
+function copyMsg() {
+  navigator.clipboard.writeText(window._successMsg || '').then(() => alert('已複製！'));
+}
+
+// Countdown
+function updateCountdown() {
+  const now = new Date();
+  const diff = DEADLINE - now;
+  const el = document.getElementById('countdown');
+  if (diff <= 0) { el.textContent = '已結單'; return; }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  el.textContent = `距結單還有 ${d}天 ${h}時 ${m}分 ${s}秒`;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+renderGrid(PRODUCTS_BUCKWHEAT, 'grid-buckwheat');
+renderGrid(PRODUCTS_PENGYU, 'grid-pengyu');
+</script>
+</body>
+</html>
